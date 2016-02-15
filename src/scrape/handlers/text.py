@@ -8,7 +8,7 @@ class Text:
     def to_stdout(sio):
         with io.TextIOWrapper(io.BufferedReader(sio)) as file:
             for line in file:
-                print(line)
+                print(line, end='')
             file.close()
 
     @staticmethod

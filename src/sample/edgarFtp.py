@@ -35,7 +35,11 @@ class CustomHandler:
 
 opts = {}
 opts['url'] = 'ftp.sec.gov'
-opts['paths'] = ['/edgar/full-index/'+str(year)+'/QTR'+str(qtr)+'/master.gz' for year in range(1993, datetime.date.today().year) for qtr in range(1,4+1)]
+opts['paths'] = [
+        '/edgar/full-index/'+str(year)+'/QTR'+str(qtr)+'/master.gz'
+        for year in range(1993, datetime.date.today().year)
+        for qtr in range(1,4+1)
+    ]
 opts['filehandler'] = CustomHandler.to_stdout
 trans = Ftp(opts)
 trans.run()

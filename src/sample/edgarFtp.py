@@ -3,9 +3,18 @@ import gzip
 import datetime
 
 from scrape.crawl.ftp import Ftp
-from scrape.handlers.gzip import Gzip
+from scrape.handlers.text import Text
 
 class CustomHandler:
+    @staticmethod
+    def get_report(path):
+        opts = {}
+        opts['url'] = 'ftp.sec.gov'
+        opts['paths'] = [path]
+        opts['filehandler'] = Text.to_stdout
+        trans = Ftp(opts)
+        trans.run()
+
     @staticmethod
     def to_stdout(sio):
         reader = io.BufferedReader(gzip.GzipFile(fileobj=sio))
@@ -17,6 +26,7 @@ class CustomHandler:
                 parsedLine = CustomHandler.parse_line(line)
                 print(parsedLine, end='')
                 print()
+                CustomHandler.get_report(parsedLine['path'])
             file.close()
 
     @staticmethod

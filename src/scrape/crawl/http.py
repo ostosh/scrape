@@ -1,4 +1,4 @@
-import urllib.request, urllib.error
+from urllib import request, error
 import time 
 import types
 
@@ -19,11 +19,11 @@ class Http:
             raise IllegalArgumentException('Error: invalid domain arg of props.')
         if 'paths' not in props or type(props['paths']) is not list:
             raise IllegalArgumentException('Error: invalid paths arg of props')
-        if 'maxAttempts' not in props or type(props['timeout']) is not int:
+        if 'maxAttempts' not in props or type(props['maxAttempts']) is not int:
             props['maxAttempts'] = 5
         if 'timeout' not in props or type(props['timeout']) is not int:
-            props['timeout'] = 99999999
-        if 'delay' not in props or type(props['timeout']) is not float:
+            props['timeout'] = 1.0
+        if 'delay' not in props or type(props['delay']) is not float:
             props['delay'] = 0.005
         if 'chunksize' not in props or type(props['chunksize']) is not int:
             props['chunksize'] = 80 
@@ -32,7 +32,7 @@ class Http:
         self.props = props
 
     def __init_conn__(self):
-        self.http = urllib.request
+        self.http = request
 
     def __init__(self, props):
         self.__init_props__(props)
@@ -47,13 +47,12 @@ class Http:
                     LogUtils.log_error('perm HTTP failure max attempts exceeded while retrieving {0}'.format(path))
                     break
                 try:
-                    self.retrieve(path)
+                    self.retrieve(self.props['url'] + path)
                     time.sleep(self.props['delay'])
                     break
-                except urllib.error.HTTPError as e:
+                except error.HTTPError as e:
                     if e.code in range(500, 506):
                         LogUtils.log_error('temp HTTP failure while getting {0}. Resetting {1}'.format(path, e))
-                        self.__reset_conn__()
                         continue
                     else:
                         LogUtils.log_error('perm HTTP failure while getting {0}. Skipping {1}'.format(path,  e))
@@ -62,12 +61,10 @@ class Http:
                     LogUtils.log_error('perm HTTP failure while getting {0}. Skipping {1}'.format(path,  e))
                     break
 
-
-
-    def retrieve(self, uri):
+    def retrieve(self, url):
         reader = BufferedReader()
-        resp = self.http.urlopen(self.props['url'], timeout = self.props['timeout'])
-        LogUtils.log_info('ftp retrieving {0} '.format(uri))
+        LogUtils.log_info('http retrieving {0} '.format(url))
+        resp = self.http.urlopen(url, timeout=self.props['timeout'])
         
         while True:
             data = resp.read(self.props['chunksize'])

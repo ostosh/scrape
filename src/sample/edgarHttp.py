@@ -11,6 +11,6 @@ opts['paths'] = [
         for year in range(1993, datetime.date.today().year)
         for qtr in range(1,4+1)
     ]
-opts['handler'] = Text.to_txt
+opts['handler'] = Text.to_stdout
 Http(opts).run()
 

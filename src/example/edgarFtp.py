@@ -17,8 +17,6 @@ class CustomHandler:
                 if not CustomHandler.is_report_line(line):
                     continue
                 parsed_line = CustomHandler.parse_line(line)
-                #print(parsed_line, end='')
-                #print()
                 reports.append(parsed_line['path'])
             file.close()
             CustomHandler.get_reports(reports)
@@ -68,8 +66,7 @@ opts['url'] = 'ftp.sec.gov'
 opts['paths'] = [
         '/edgar/full-index/'+str(year)+'/QTR'+str(qtr)+'/master.gz'
         for year in range(1993, datetime.date.today().year)
-        for qtr in range(1,4+1)
+        for qtr in range(1, 4+1)
     ]
 opts['handler'] = CustomHandler.process_index
 Ftp(opts).run()
-

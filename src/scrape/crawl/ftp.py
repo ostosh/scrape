@@ -36,14 +36,9 @@ class Ftp:
 
     def __init__(self, props):
         self.__init_props__(props)
-        self.__init_conn__()
     
     def __close_conn__(self):
         self.ftp.close()
-
-    def __reset_conn__(self):
-        self.__close_conn__()
-        self.__init_conn__()
 
     def run(self):
         for path in self.props['paths']:
@@ -54,12 +49,12 @@ class Ftp:
                     LogUtils.log_error('perm HTTP failure max attempts exceeded while retrieving {0}'.format(path))
                     break
                 try:
+                    self.__init_conn__()
                     self.retrieve(path)
                     time.sleep(self.props['delay'])
                     break
-                except (error_reply, error_temp, error_proto) as e:
+                except (error_reply, error_temp, error_proto, EOFError) as e:
                     LogUtils.log_error('temp FTP failure while retrieving {0}. Resetting {1}'.format(path, e))
-                    self.__reset_conn__()
                     continue
                 except Exception as e:
                     LogUtils.log_error('perm FTP failure while retrieving {0}. Skipping {1}'.format(path,  e))

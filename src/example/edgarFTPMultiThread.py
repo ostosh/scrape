@@ -1,11 +1,8 @@
-import time
-import datetime
-import threading
-import queue
 import io
 import gzip
 import re
 import operator
+from multiprocessing import Pool
 
 from scrape.crawl.ftp import Ftp
 
@@ -25,10 +22,10 @@ class CustomHandler:
                 reports.append(parsed_line['path'])
             file.close()
             CustomHandler.get_reports(reports)
+        print_top_words()
 
     @staticmethod
     def process_report_text(sio):
-
         with io.TextIOWrapper(io.BufferedReader(sio)) as file:
             for line in file:
                 tokens = line.split(' ')
@@ -54,7 +51,12 @@ class CustomHandler:
 
     @staticmethod
     def is_report_line(line):
-        return line.__contains__("|edgar/data")
+        if not line.__contains__("|edgar/data"):
+            return False
+        if not line.__contains__("10-Q"):
+            return False
+        else:
+            return True
 
     @staticmethod
     def parse_line(line):
@@ -67,22 +69,6 @@ class CustomHandler:
         return parsed
 
 
-def parallel_task(target, args_list):
-    result = queue.Queue()
-
-    def task_wrapper(*args):
-        result.put(target(*args))
-
-    threads = []
-    for args in args_list:
-        threads.append(threading.Thread(target=task_wrapper, args=args))
-    for thread in threads:
-        thread.start()
-    for thread in threads:
-        thread.join()
-    return result
-
-
 def get_report(url):
     opts = dict()
     opts['url'] = 'ftp.sec.gov'
@@ -90,12 +76,22 @@ def get_report(url):
     opts['paths'] = [url]
     return Ftp(opts).run()
 
+
+def print_top_words():
+    sorted_map = sorted(word_map.items(), key=operator.itemgetter(1), reverse=True)
+    count = len(sorted_map)
+    [print(sorted_map[i], end='') for i in range(min(count, 10))]
+    if count > 1:
+        print()
+
 paths = [
-    ('/edgar/full-index/'+str(year)+'/QTR'+str(qtr)+'/master.gz',)
-    for year in range(1993, 1994)  # this should keep us busy for a while...
+    '/edgar/full-index/'+str(year)+'/QTR'+str(qtr)+'/master.gz'
+    for year in range(1993, 1998)  # this should keep us busy for a while...
     for qtr in range(1, 4+1)
 ]
 
-parallel_task(get_report, paths)
+pool = Pool(8)
+pool.map(get_report, paths)
+
 sorted_word_map = sorted(word_map.items(), key=operator.itemgetter(1), reverse=True)
 print(sorted_word_map)

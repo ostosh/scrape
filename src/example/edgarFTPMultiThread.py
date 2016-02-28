@@ -86,12 +86,9 @@ def print_top_words():
 
 paths = [
     '/edgar/full-index/'+str(year)+'/QTR'+str(qtr)+'/master.gz'
-    for year in range(1993, 1998)  # this should keep us busy for a while...
+    for year in range(1993, 1996)  # this should keep us busy for a while...
     for qtr in range(1, 4+1)
 ]
 
 pool = Pool(8)
 pool.map(get_report, paths)
-
-sorted_word_map = sorted(word_map.items(), key=operator.itemgetter(1), reverse=True)
-print(sorted_word_map)

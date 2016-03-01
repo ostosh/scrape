@@ -13,6 +13,7 @@ class BufferedReader:
     def save_file(self, callback):
         self.sio.seek(0)
         callback(self.sio)
+        self.sio.close()
 
     def get_buffered_size(self):
         return self.cur_size

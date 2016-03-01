@@ -1,10 +1,10 @@
 import io
 import gzip
-import datetime
 import re
 
-from scrape.crawl.ftp import Ftp
+from scrape.handlers.gzip import Gzip
 from scrape.handlers.text import Text
+from scrape.crawl.ftp import Ftp
 
 
 class CustomHandler:
@@ -14,6 +14,7 @@ class CustomHandler:
         reader = io.BufferedReader(gzip.GzipFile(fileobj=sio))
         with io.TextIOWrapper(reader, encoding="ISO-8859-1") as file:
             for line in file:
+                print(line)
                 if not CustomHandler.is_report_line(line):
                     continue
                 parsed_line = CustomHandler.parse_line(line)
@@ -44,12 +45,17 @@ class CustomHandler:
         opts = dict()
         opts['url'] = 'ftp.sec.gov'
         opts['paths'] = reports
-        opts['handler'] = CustomHandler.process_report_text
+        opts['handler'] = Text.to_txt
         Ftp(opts).run()
 
     @staticmethod
     def is_report_line(line):
-        return line.__contains__("|edgar/data")
+        if not line.__contains__("|edgar/data"):
+            return False
+        if not line.__contains__("10-K"):
+            return False
+        else:
+            return True
 
     @staticmethod
     def parse_line(line):
@@ -65,8 +71,8 @@ opts = dict()
 opts['url'] = 'ftp.sec.gov'
 opts['paths'] = [
         '/edgar/full-index/'+str(year)+'/QTR'+str(qtr)+'/master.gz'
-        for year in range(1993, datetime.date.today().year)
-        for qtr in range(1, 4+1)
+        for year in range(1995, 1996)
+        for qtr in range(1, 2)
     ]
-opts['handler'] = CustomHandler.process_index
+opts['handler'] = Gzip.to_txt # CustomHandler.process_index
 Ftp(opts).run()

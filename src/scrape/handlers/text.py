@@ -13,7 +13,7 @@ class Text:
 
     @staticmethod
     def to_txt(sio):
-        out = open(str(TimeUtils.unix_time_mills())+"_report.txt", "wt")
+        out = open(str(TimeUtils.unix_time_mills()) + '.txt', 'wt')
         with io.TextIOWrapper(io.BufferedReader(sio)) as file:
             for line in file:
                 out.write(line)

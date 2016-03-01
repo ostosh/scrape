@@ -86,9 +86,9 @@ def print_top_words():
 
 paths = [
     '/edgar/full-index/'+str(year)+'/QTR'+str(qtr)+'/master.gz'
-    for year in range(1993, 1996)  # this should keep us busy for a while...
+    for year in range(1993, 2000)  # this should keep us busy for a while...
     for qtr in range(1, 4+1)
 ]
 
-pool = Pool(8)
+pool = Pool(15)
 pool.map(get_report, paths)

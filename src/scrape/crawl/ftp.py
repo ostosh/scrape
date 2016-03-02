@@ -91,11 +91,6 @@ class Ftp:
     def retrieve(self, uri):
         reader = BufferedReader()
         LogUtils.log_info('ftp retrieving {0}'.format(uri))
-        #self.ftp.sendcmd('TYPE i')
-        #report_size = self.ftp.size(uri)
-        #self.ftp.sendcmd('TYPE a')
-
-        #while reader.get_buffered_size() < report_size:
         self.ftp.retrbinary('RETR ' + uri, callback=reader.buffer_data, blocksize=102400)
         reader.save_file(self.dump_report)
 

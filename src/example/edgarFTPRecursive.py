@@ -16,8 +16,7 @@ def get_report(url):
 def get_listings():
     opts = dict()
     opts['url'] = 'ftp.sec.gov'
-    opts['handler'] = Tar.to_tar
-    opts['paths'] = ['/edgar/Feed/1995/QTR3']
+    opts['paths'] = ['/edgar/Feed/2015/QTR3']
     reports = Ftp(opts).list()
 
     listings = []
@@ -27,5 +26,5 @@ def get_listings():
         listings.append(report)
     return listings
 
-pool = Pool(15)
+pool = Pool(20)
 pool.map(get_report, get_listings())

@@ -13,4 +13,7 @@ examples:
 2. edgarFTPMultiThread: multi-threaded FTP example to pull all company filings from 1993 and dump a
     word count summary for all reports to stdout
 
-3. edgarHTTP: simple single threaded HTTP example to pull all filing index reports from 1993 - 2015 and dump to stdout
+3. edgarFTPRecursive: multi-threaded FTP example to pull all files located within a given set of directories
+    and with a file name matching desired pattern
+
+4. edgarHTTP: simple single threaded HTTP example to pull all filing index reports from 1993 - 2015 and dump to stdout

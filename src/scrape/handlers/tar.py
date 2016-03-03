@@ -17,5 +17,6 @@ class Tar:
     @staticmethod
     def to_file(sio):
         tar = tarfile.open(fileobj=sio)
+
         tar.extractall('./reports/')
         tar.close()

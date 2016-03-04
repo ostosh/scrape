@@ -14,11 +14,11 @@ class IllegalArgumentException(Exception):
 class Http:
     def __init_props__(self, props):
         if type(props) is not dict:
-            raise IllegalArgumentException('Error: invalid props object given.')
+            raise IllegalArgumentException('invalid props object given.')
         if 'url' not in props or type(props['url']) is not str:
-            raise IllegalArgumentException('Error: invalid domain arg of props.')
+            raise IllegalArgumentException('invalid domain of props.')
         if 'paths' not in props or type(props['paths']) is not list:
-            raise IllegalArgumentException('Error: invalid paths arg of props')
+            raise IllegalArgumentException('invalid paths of props')
         if 'maxAttempts' not in props or type(props['maxAttempts']) is not int:
             props['maxAttempts'] = 5
         if 'timeout' not in props or type(props['timeout']) is not int:
@@ -44,7 +44,7 @@ class Http:
             while True:
                 attempts += 1
                 if attempts > self.props['maxAttempts']:
-                    LogUtils.log_error('perm HTTP failure max attempts exceeded while retrieving {0}'.format(path))
+                    LogUtils.log_error('perm HTTP failure retrieving {0}'.format(path))
                     break
                 try:
                     self.retrieve(self.props['url'] + path)
@@ -52,13 +52,13 @@ class Http:
                     break
                 except error.HTTPError as e:
                     if e.code in range(500, 506):
-                        LogUtils.log_error('temp HTTP failure while getting {0}. Resetting {1}'.format(path, e))
+                        LogUtils.log_error('temp HTTP failure {0}: {1}'.format(path, e))
                         continue
                     else:
-                        LogUtils.log_error('perm HTTP failure while getting {0}. Skipping {1}'.format(path,  e))
+                        LogUtils.log_error('perm HTTP failure {0}: {1}'.format(path,  e))
                         break
                 except Exception as e:
-                    LogUtils.log_error('perm HTTP failure while getting {0}. Skipping {1}'.format(path,  e))
+                    LogUtils.log_error('perm HTTP failure {0}: {1}'.format(path,  e))
                     break
 
     def retrieve(self, url):

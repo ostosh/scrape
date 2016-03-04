@@ -16,9 +16,9 @@ class IllegalArgumentException(Exception):
 class Ftp:
     def __init_props__(self, props):
         if type(props) is not dict:
-            raise IllegalArgumentException('Error: invalid props object given.')
+            raise IllegalArgumentException('invalid props given.')
         if 'url' not in props or type(props['url']) is not str:
-            raise IllegalArgumentException('Error: invalid domain arg of props.')
+            raise IllegalArgumentException('invalid domain of props.')
         if 'paths' not in props or type(props['paths']) is not list:
             props['paths'] = ['/']
         if 'maxAttempts' not in props or type(props['timeout']) is not int:
@@ -31,14 +31,14 @@ class Ftp:
             props['handler'] = Gzip.to_stdout
         self.props = props
         
-    def __init_conn__(self): # TODO add validation for bad path
+    def __init_conn__(self):
         while True:
             try:
                 self.ftp = FTP(self.props['url'], '', '', self.props['timeout'])
                 self.ftp.login()
                 return
             except (EOFError) as e:
-                LogUtils.log_error('temp FTP failure while retrieving {0}. Resetting'.format(e))
+                LogUtils.log_error('temp FTP failure retrieving: {0}'.format(e))
                 time.sleep(2)
                 continue
 
@@ -55,7 +55,7 @@ class Ftp:
             while True:
                 attempts += 1
                 if attempts > self.props['maxAttempts']:
-                    LogUtils.log_error('perm HTTP failure max attempts exceeded while retrieving {0}'.format(path))
+                    LogUtils.log_error('perm FTP failure retrieving {0}'.format(path))
                     break
                 try:
                     self.retrieve(path)
@@ -63,10 +63,10 @@ class Ftp:
                     break
                 except (error_reply, error_temp, error_proto, EOFError) as e:
                     self.__init_conn__()
-                    LogUtils.log_error('temp FTP failure while retrieving {0}. Resetting {1}'.format(path, e))
+                    LogUtils.log_error('temp FTP failure retrieving {0}: {1}'.format(path, e))
                     continue
                 except Exception as e:
-                    LogUtils.log_error('perm FTP failure while retrieving {0}. Skipping {1}'.format(path,  e))
+                    LogUtils.log_error('perm FTP failure while retrieving {0}: {1}'.format(path,  e))
                     break
         self.__close_conn__()
 

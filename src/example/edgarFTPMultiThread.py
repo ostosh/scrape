@@ -4,6 +4,7 @@ import re
 import operator
 from multiprocessing import Pool
 
+import loader
 from scrape.crawl.ftp import Ftp
 
 word_map = dict()  # hold word count tally

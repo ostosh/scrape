@@ -2,6 +2,7 @@ import io
 import gzip
 import re
 
+import loader
 from scrape.handlers.gzip import Gzip
 from scrape.handlers.text import Text
 from scrape.crawl.ftp import Ftp

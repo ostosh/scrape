@@ -1,6 +1,7 @@
 import re
 from multiprocessing import Pool
 
+import loader
 from scrape.crawl.ftp import Ftp
 from scrape.handlers.tar import Tar
 
@@ -25,6 +26,7 @@ def get_listings():
             continue
         listings.append(report)
     return listings
+
 
 pool = Pool(20)
 pool.map(get_report, get_listings())

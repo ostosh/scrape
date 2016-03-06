@@ -1,5 +1,6 @@
 import datetime
 
+import loader
 from scrape.crawl.http import Http
 from scrape.handlers.gzip import Gzip
 

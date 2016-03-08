@@ -21,11 +21,11 @@ class Ftp:
             raise IllegalArgumentException('invalid domain of props.')
         if 'paths' not in props or type(props['paths']) is not list:
             props['paths'] = ['/']
-        if 'maxAttempts' not in props or type(props['timeout']) is not int:
+        if 'maxAttempts' not in props or type(props['maxAttempts']) is not int:
             props['maxAttempts'] = 5
         if 'timeout' not in props or type(props['timeout']) is not int:
             props['timeout'] = 99999999
-        if 'delay' not in props or type(props['timeout']) is not float:
+        if 'delay' not in props or type(props['delay']) is not float:
             props['delay'] = 0.005
         if 'handler' not in props or type(props['handler']) is not types.FunctionType:
             props['handler'] = Gzip.to_stdout
